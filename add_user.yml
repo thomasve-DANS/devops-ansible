@@ -1,0 +1,27 @@
+- name: create user and add ssh
+  hosts: all
+  remote_user: root
+  become: yes
+  tasks:
+
+# name - Defines the username that is present or to create
+# groups - Adds users in secondary groups or use groups
+# state: present - Creates a user or works with a user
+# state: absent - Deletes a user
+# shell - Specifies shell-type a user can work on
+# home - Sets a user’s home directory
+# createhome: yes - Create a home directory for a user 
+# createhome: no - Do not create a home directory for a user
+
+# Creating the user marce
+    - name: Add the user 'marce'
+      ansible.builtin.user:
+        name: marce 
+        home: /home/marce
+        password: "$6$fsSZroEaL3XzybDy$EuwLo9pxEIOC4cPoQaZAmOyamjfjZaT5NdBfrXCln9KxdxBU.fMzi/38rHBDXxTtIhSoX7mrKdq2JS7YZ3Kjl0"
+
+    - name: Copy ssh key for user 'marce'
+      authorized_key:
+        user: marce
+        state: present
+        key: "{{ lookup('file','/Users/thomasvanerven/Projects/devops-ansible/keys/id_rsa.pub') }}"
