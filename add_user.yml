@@ -1,6 +1,19 @@
 - name: create user and add ssh
   hosts: all
-  remote_user: root
+  vars_prompt:
+    - name: username
+      prompt: What is your username?
+      private: no
+
+    - name: key_file
+      prompt: Name of the key file
+      private: no
+
+    - name: remote_username
+      prompt: Act as which remote user?
+      private: no
+
+  remote_user: "{{remote_username}}"
   become: yes
   tasks:
 
@@ -14,14 +27,19 @@
 # createhome: no - Do not create a home directory for a user
 
 # Creating the user marce
-    - name: Add the user 'marce'
+    # - name: Add the user 'alish'
+    #   ansible.builtin.user:
+    #     name: alish 
+    #     home: /home/marce
+    #     password: "$6$fsSZroEaL3XzybDy$EuwLo9pxEIOC4cPoQaZAmOyamjfjZaT5NdBfrXCln9KxdxBU.fMzi/38rHBDXxTtIhSoX7mrKdq2JS7YZ3Kjl0"
+    - name: Add the user
       ansible.builtin.user:
-        name: marce 
-        home: /home/marce
-        password: "$6$fsSZroEaL3XzybDy$EuwLo9pxEIOC4cPoQaZAmOyamjfjZaT5NdBfrXCln9KxdxBU.fMzi/38rHBDXxTtIhSoX7mrKdq2JS7YZ3Kjl0"
+        name: "{{ username }}" 
+        home: "/home/{{ username }}"
+        append: yes
 
-    - name: Copy ssh key for user 'marce'
+    - name: Copy ssh key for user
       authorized_key:
-        user: marce
+        user: "{{ username }}"
         state: present
-        key: "{{ lookup('file','/Users/thomasvanerven/Projects/devops-ansible/keys/id_rsa.pub') }}"
+        key: "{{ lookup('file','/Users/thomasvanerven/Projects/devops-ansible/keys/{{ username }}/{{ key_file }}.pub') }}"
