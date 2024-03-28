@@ -1,0 +1,15 @@
+- name: Locking out a user
+  hosts: all
+  vars_prompt:
+    - name: username
+      prompt: User to expire
+      private: no
+  remote_user: thomase
+  become: yes
+  tasks:
+
+# Expire the given user
+    - name: Expire the user '{{ username }}'
+      ansible.builtin.user:
+        name: "{{ username }}"
+        expires: 1

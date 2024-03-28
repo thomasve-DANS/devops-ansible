@@ -1,0 +1,12 @@
+- name: Reboot tomcat on easy11 prod
+  hosts: easy11.dans.knaw.nl
+  remote_user: thomase
+  become: yes
+  tasks:
+
+# Creating the user marce
+    - name: Restart Tomcat
+      ansible.builtin.service:
+        name: tomcat
+        state: restarted
+        enabled: true

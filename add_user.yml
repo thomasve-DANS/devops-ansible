@@ -5,10 +5,6 @@
       prompt: What is your username?
       private: no
 
-    - name: key_file
-      prompt: Name of the key file
-      private: no
-
     - name: remote_username
       prompt: Act as which remote user?
       private: no
@@ -17,29 +13,13 @@
   become: yes
   tasks:
 
-# name - Defines the username that is present or to create
-# groups - Adds users in secondary groups or use groups
-# state: present - Creates a user or works with a user
-# state: absent - Deletes a user
-# shell - Specifies shell-type a user can work on
-# home - Sets a user’s home directory
-# createhome: yes - Create a home directory for a user 
-# createhome: no - Do not create a home directory for a user
-
-# Creating the user marce
-    # - name: Add the user 'alish'
-    #   ansible.builtin.user:
-    #     name: alish 
-    #     home: /home/marce
-    #     password: "$6$fsSZroEaL3XzybDy$EuwLo9pxEIOC4cPoQaZAmOyamjfjZaT5NdBfrXCln9KxdxBU.fMzi/38rHBDXxTtIhSoX7mrKdq2JS7YZ3Kjl0"
     - name: Add the user
       ansible.builtin.user:
         name: "{{ username }}" 
         home: "/home/{{ username }}"
+        password: "$6$SLz6WGrGrJCZQrd.$6TzGefulz5Qcz7QVPZtT5Aw10KUfVcV/yS2a4ZznKoL0arDtIaDnDdps3r7NEx3gdZzwV2joslW.YvyMeSnYc1"
         append: yes
+        groups: wheel, root
 
-    - name: Copy ssh key for user
-      authorized_key:
-        user: "{{ username }}"
-        state: present
-        key: "{{ lookup('file','/Users/thomasvanerven/Projects/devops-ansible/keys/{{ username }}/{{ key_file }}.pub') }}"
+    # - name: Expire password
+      # ansible.builtin.shell: passwd marce --expire
